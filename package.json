@@ -1,0 +1,43 @@
+{
+  "name": "agentic-json-resume",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:core": "turbo run dev --filter=!@repo/aws --filter=!calc-paye-kenya --filter=!rate-calculator",
+    "lint": "vp lint --deny-warnings .",
+    "lint:fix": "vp lint --fix .",
+    "format": "vp fmt .",
+    "format:fix": "vp fmt .",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "test:all": "turbo run test test:e2e",
+    "test:sanity": "turbo run test && turbo run test:e2e:smoke",
+    "check-types": "turbo run check-types",
+    "quality": "turbo run //#lint //#format",
+    "quality:fix": "turbo run //#lint:fix //#format:fix",
+    "prepare": "vp config && git config core.hooksPath .githooks"
+  },
+  "devDependencies": {
+    "@shadcn/lint": "^0.2.0",
+    "@tanstack/intent": "^0.5.5",
+    "@typescript/native-preview": "catalog:",
+    "turbo": "^2.11.10",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.27.0",
+  "pnpm": {
+    "minimumReleaseAgeExclude": [
+      "event-sourced-collection"
+    ]
+  },
+  "intent": {
+    "skills": [
+      "*"
+    ]
+  }
+}
