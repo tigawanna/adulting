@@ -1,0 +1,12 @@
+{
+  "name": "Kenya Tools Calendar",
+  "short_name": "KE Calendar",
+  "description": "Public holidays, KRA filing periods, school terms and deadlines in one calendar.",
+  "start_url": "/calendar",
+  "display": "standalone",
+  "background_color": "#f6f7f4",
+  "theme_color": "#10573a",
+  "icons": [
+    { "src": "/kenya.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

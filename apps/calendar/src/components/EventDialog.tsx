@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from "react";
-import { CalendarDays, Trash2, X } from "lucide-react";
+import { IconCalendarPlus, IconTrash, IconX } from "@/components/Icons";
+import { createSignal, For, Show, type Component } from "solid-js";
 import { api } from "@/lib/api";
 import { CATEGORY_LABELS } from "@/lib/date";
 import type { CalendarEvent, EventCategory, EventInput } from "@/lib/types";
@@ -12,136 +12,133 @@ interface Props {
 }
 
 const CATEGORIES: EventCategory[] = ["holiday", "tax", "school", "deadline", "other"];
-const RECURRENCES = ["none", "yearly", "monthly"] as const;
 
-export function EventDialog({ initial, defaultDate, onClose, onSaved }: Props) {
-  const [title, setTitle] = useState(initial?.title ?? "");
-  const [description, setDescription] = useState(initial?.description ?? "");
-  const [category, setCategory] = useState<EventCategory>(initial?.category ?? "other");
-  const [startDate, setStartDate] = useState(initial?.startDate ?? defaultDate);
-  const [endDate, setEndDate] = useState(initial?.endDate ?? "");
-  const [recurrence, setRecurrence] = useState<(typeof RECURRENCES)[number]>(
-    initial?.recurrence ?? "none",
-  );
-  const [location, setLocation] = useState(initial?.location ?? "");
-  const [source, setSource] = useState(initial?.source ?? "");
-  const [sourceUrl, setSourceUrl] = useState(initial?.sourceUrl ?? "");
-  const [tags, setTags] = useState(initial?.tags.join(", ") ?? "");
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const EventDialog: Component<Props> = (props) => {
+  const [title, setTitle] = createSignal(props.initial?.title ?? "");
+  const [description, setDescription] = createSignal(props.initial?.description ?? "");
+  const [category, setCategory] = createSignal<EventCategory>(props.initial?.category ?? "other");
+  const [startDate, setStartDate] = createSignal(props.initial?.startDate ?? props.defaultDate);
+  const [endDate, setEndDate] = createSignal(props.initial?.endDate ?? "");
+  const [recurrence, setRecurrence] = createSignal(props.initial?.recurrence ?? "none");
+  const [location, setLocation] = createSignal(props.initial?.location ?? "");
+  const [source, setSource] = createSignal(props.initial?.source ?? "");
+  const [sourceUrl, setSourceUrl] = createSignal(props.initial?.sourceUrl ?? "");
+  const [tags, setTags] = createSignal(props.initial?.tags.join(", ") ?? "");
+  const [saving, setSaving] = createSignal(false);
+  const [error, setError] = createSignal<string | null>(null);
 
-  async function handleSubmit(event: FormEvent) {
+  const submitLabel = () => {
+    if (saving()) return "Saving…";
+    return props.initial ? "Save changes" : "Add date";
+  };
+
+  async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     setSaving(true);
     setError(null);
     const input: EventInput = {
-      title: title.trim(),
-      description: description.trim() || null,
-      category,
-      startDate,
-      endDate: endDate || null,
-      recurrence,
-      location: location.trim() || null,
-      source: source.trim() || null,
-      sourceUrl: sourceUrl.trim() || null,
-      tags: tags
+      title: title().trim(),
+      description: description().trim() || null,
+      category: category(),
+      startDate: startDate(),
+      endDate: endDate() || null,
+      recurrence: recurrence() as EventInput["recurrence"],
+      location: location().trim() || null,
+      source: source().trim() || null,
+      sourceUrl: sourceUrl().trim() || null,
+      tags: tags()
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean),
     };
     try {
-      if (initial) await api.updateEvent(initial.id, input);
+      if (props.initial) await api.updateEvent(props.initial.id, input);
       else await api.createEvent(input);
-      onSaved();
+      props.onSaved();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save event");
+      setError(err instanceof Error ? err.message : "Could not save date");
       setSaving(false);
     }
   }
 
-  let submitLabel = "Add event";
-  if (initial) submitLabel = "Save changes";
-  if (saving) submitLabel = "Saving…";
-
   async function handleDelete() {
-    if (!initial) return;
-    if (!confirm(`Delete "${initial.title}"?`)) return;
+    if (!props.initial || !confirm(`Delete "${props.initial.title}"?`)) return;
     setSaving(true);
     try {
-      await api.deleteEvent(initial.id);
-      onSaved();
+      await api.deleteEvent(props.initial.id);
+      props.onSaved();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not delete event");
+      setError(err instanceof Error ? err.message : "Could not delete date");
       setSaving(false);
     }
   }
 
   return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={onClose}>
+    <div class="modal-backdrop" onMouseDown={props.onClose}>
       <div
-        className="modal"
+        class="modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="dialog-title"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="modal-head">
-          <div className="modal-heading">
-            <span className="modal-icon">
-              <CalendarDays size={18} />
+        <div class="modal-head">
+          <div class="modal-heading">
+            <span class="modal-icon">
+              <IconCalendarPlus size={19} />
             </span>
             <div>
-              <h2 id="dialog-title">{initial ? "Edit event" : "Add an event"}</h2>
-              <p>Record a date worth remembering.</p>
+              <h2 id="dialog-title">{props.initial ? "Edit date" : "Add a date"}</h2>
+              <p>Keep the record useful — a source makes it verifiable.</p>
             </div>
           </div>
-          <button className="icon-btn" type="button" onClick={onClose} aria-label="Close">
-            <X size={18} />
+          <button class="icon-btn" type="button" onClick={props.onClose} aria-label="Close">
+            <IconX size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-grid">
-            <label className="field field-wide">
+          <div class="form-grid">
+            <label class="field field-wide">
               <span>Title *</span>
               <input
-                autoFocus
+                autofocus
                 required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={title()}
+                onInput={(e) => setTitle(e.currentTarget.value)}
                 placeholder="e.g. KRA VAT filing"
               />
             </label>
 
-            <label className="field field-wide">
+            <label class="field field-wide">
               <span>Description</span>
               <textarea
                 rows={3}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={description()}
+                onInput={(e) => setDescription(e.currentTarget.value)}
                 placeholder="What is this date about?"
               />
             </label>
 
-            <label className="field">
+            <label class="field">
               <span>Category</span>
               <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value as EventCategory)}
+                value={category()}
+                onChange={(e) => setCategory(e.currentTarget.value as EventCategory)}
               >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {CATEGORY_LABELS[c]}
-                  </option>
-                ))}
+                <For each={CATEGORIES}>
+                  {(c) => <option value={c}>{CATEGORY_LABELS[c]}</option>}
+                </For>
               </select>
             </label>
 
-            <label className="field">
+            <label class="field">
               <span>Recurrence</span>
               <select
-                value={recurrence}
-                onChange={(e) => setRecurrence(e.target.value as typeof recurrence)}
+                value={recurrence()}
+                onChange={(e) =>
+                  setRecurrence(e.currentTarget.value as "none" | "yearly" | "monthly")
+                }
               >
                 <option value="none">Once</option>
                 <option value="yearly">Every year</option>
@@ -149,86 +146,90 @@ export function EventDialog({ initial, defaultDate, onClose, onSaved }: Props) {
               </select>
             </label>
 
-            <label className="field">
+            <label class="field">
               <span>Start date *</span>
               <input
                 required
                 type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                value={startDate()}
+                onInput={(e) => setStartDate(e.currentTarget.value)}
               />
             </label>
 
-            <label className="field">
+            <label class="field">
               <span>End date</span>
-              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              <input
+                type="date"
+                value={endDate()}
+                onInput={(e) => setEndDate(e.currentTarget.value)}
+              />
             </label>
 
-            <label className="field">
+            <label class="field">
               <span>Location</span>
               <input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                value={location()}
+                onInput={(e) => setLocation(e.currentTarget.value)}
                 placeholder="Optional"
               />
             </label>
 
-            <label className="field">
+            <label class="field">
               <span>Tags</span>
               <input
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
+                value={tags()}
+                onInput={(e) => setTags(e.currentTarget.value)}
                 placeholder="kra, vat, monthly"
               />
             </label>
 
-            <label className="field">
+            <label class="field">
               <span>Source</span>
               <input
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
+                value={source()}
+                onInput={(e) => setSource(e.currentTarget.value)}
                 placeholder="e.g. KRA calendar 2026"
               />
             </label>
 
-            <label className="field">
+            <label class="field">
               <span>Source URL</span>
               <input
                 type="url"
-                value={sourceUrl}
-                onChange={(e) => setSourceUrl(e.target.value)}
+                value={sourceUrl()}
+                onInput={(e) => setSourceUrl(e.currentTarget.value)}
                 placeholder="https://…"
               />
             </label>
           </div>
 
-          {error && (
-            <p className="form-error" role="alert">
-              {error}
+          <Show when={error()}>
+            <p class="form-error" role="alert">
+              {error()}
             </p>
-          )}
+          </Show>
 
-          <div className="modal-actions">
-            {initial && (
+          <div class="modal-actions">
+            <Show when={props.initial}>
               <button
-                className="btn btn-danger-ghost"
+                class="btn btn-danger-ghost"
                 type="button"
                 onClick={handleDelete}
-                disabled={saving}
+                disabled={saving()}
               >
-                <Trash2 size={15} /> Delete
+                <IconTrash size={15} /> Delete
               </button>
-            )}
-            <span className="spacer" />
-            <button className="btn btn-ghost" type="button" onClick={onClose} disabled={saving}>
+            </Show>
+            <span class="spacer" />
+            <button class="btn btn-ghost" type="button" onClick={props.onClose} disabled={saving()}>
               Cancel
             </button>
-            <button className="btn btn-primary" type="submit" disabled={saving}>
-              {submitLabel}
+            <button class="btn btn-primary" type="submit" disabled={saving()}>
+              {submitLabel()}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-}
+};

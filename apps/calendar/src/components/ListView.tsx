@@ -1,3 +1,4 @@
+import { For, Show, type Component } from "solid-js";
 import { formatRange } from "@/lib/date";
 import type { CalendarEvent } from "@/lib/types";
 
@@ -6,19 +7,18 @@ interface Props {
   onEventClick: (event: CalendarEvent) => void;
 }
 
-export function ListView({ events, onEventClick }: Props) {
-  if (events.length === 0) {
-    return (
-      <div className="empty-state">
-        <h3>No matching events</h3>
+export const ListView: Component<Props> = (props) => (
+  <Show
+    when={props.events.length > 0}
+    fallback={
+      <div class="empty-state">
+        <h3>No matching dates</h3>
         <p>Try a different name, tag or category — or add a new date.</p>
       </div>
-    );
-  }
-
-  return (
-    <div className="table-wrap">
-      <table className="event-table">
+    }
+  >
+    <div class="table-wrap">
+      <table class="event-table">
         <thead>
           <tr>
             <th>Date</th>
@@ -28,26 +28,29 @@ export function ListView({ events, onEventClick }: Props) {
           </tr>
         </thead>
         <tbody>
-          {events.map((event) => (
-            <tr
-              key={event.id}
-              onClick={() => onEventClick(event)}
-              tabIndex={0}
-              onKeyDown={(e) => e.key === "Enter" && onEventClick(event)}
-            >
-              <td className="date-cell">{formatRange(event.startDate, event.endDate)}</td>
-              <td>
-                <strong>{event.title}</strong>
-                {event.description && <small>{event.description}</small>}
-              </td>
-              <td>
-                <span className={`badge cat-${event.category}`}>{event.category}</span>
-              </td>
-              <td className="source-cell">{event.source ?? "—"}</td>
-            </tr>
-          ))}
+          <For each={props.events}>
+            {(event) => (
+              <tr
+                tabindex={0}
+                onClick={() => props.onEventClick(event)}
+                onKeyDown={(e) => e.key === "Enter" && props.onEventClick(event)}
+              >
+                <td class="date-cell">{formatRange(event.startDate, event.endDate)}</td>
+                <td>
+                  <strong>{event.title}</strong>
+                  <Show when={event.description}>
+                    <small>{event.description}</small>
+                  </Show>
+                </td>
+                <td>
+                  <span class={`badge cat-${event.category}`}>{event.category}</span>
+                </td>
+                <td class="source-cell">{event.source ?? "—"}</td>
+              </tr>
+            )}
+          </For>
         </tbody>
       </table>
     </div>
-  );
-}
+  </Show>
+);

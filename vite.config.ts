@@ -4,7 +4,12 @@ export default defineConfig({
   fmt: {
     // These apps were carried over verbatim from the source monorepo; keep
     // their original formatting rather than reformatting them on every run.
-    ignorePatterns: ["**/routeTree.gen.ts", "apps/calc-paye-kenya/**", "apps/rate-calculator/**"],
+    ignorePatterns: [
+      "**/routeTree.gen.ts",
+      "apps/calc-paye-kenya/**",
+      "apps/rate-calculator/**",
+      ".agents/skills/**",
+    ],
   },
   staged: {
     "*": (files: readonly string[]) => {

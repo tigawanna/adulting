@@ -1,23 +1,29 @@
 # Calendar — Kenya Tools
 
-A single, continuous calendar for Kenya-related dates: public holidays, KRA
-filing windows, school terms, exam windows and other deadlines. Built with
-**React + TanStack Router** on the frontend and a small **Hono** API backed by
-**libSQL / Turso**.
+A single, prerendered calendar for Kenya-related dates: public holidays, KRA
+filing windows, school terms, exam windows and other deadlines.
 
-> ⚠️ The seeded dates are **starter/reference data**. Fixed-date public holidays
-> are reliable; movable feasts, KRA deadlines and KICD/KNEC dates for 2026 are
-> indicative and must be verified against the official sources before use.
-> Every row records its `source` so you can see where it came from.
+The frontend is **Solid 2** built with the same Vite + `@solidjs/prerender`
+setup as `apps/calc-paye-kenya`, so `pnpm build` emits a static site. Data is
+served by a small **Hono** API backed by **libSQL / Turso**.
+
+> ⚠️ Seeded dates are **reference data**. Fixed-date public holidays are
+> reliable; movable feasts, KRA deadlines and KICD/KNEC dates for 2026 are
+> indicative and must be verified against official sources. Every row records
+> its `source`.
 
 ## Stack
 
-| Layer      | Choice                                                                                         |
-| ---------- | ---------------------------------------------------------------------------------------------- |
-| UI         | React 19, TanStack Router (file-based routes), plain CSS                                       |
-| API        | Hono + `@hono/node-server`                                                                     |
-| DB         | `@libsql/client` — `file:` SQLite for dev, `libsql://` (Turso) for prod                        |
-| Embeddings | Reserved `embedding BLOB` + `embedding_model` columns and a scaffold in `server/embeddings.ts` |
+| Layer  | Choice                                                                                                      |
+| ------ | ----------------------------------------------------------------------------------------------------------- |
+| UI     | Solid 2 (`@solidjs/web`), `@solidjs/meta`, Tabler icons, native CSS tokens                                  |
+| Build  | Vite 8 + `@solidjs/vite-plugin` + `@solidjs/prerender` + `prerender-crawler` (static output)                |
+| API    | Hono + `@hono/node-server`                                                                                  |
+| DB     | `@libsql/client` — `file:` SQLite locally, `libsql://` (Turso) in production                                |
+| Design | Local taste skills in `.agents/skills/` (design-taste-frontend, emil-design-eng, high-end-visual-design, …) |
+
+Light and dark themes follow `prefers-color-scheme` and can be toggled in the
+header. Motion is gated behind `prefers-reduced-motion`.
 
 ## Getting started
 
@@ -25,36 +31,39 @@ From the repo root:
 
 ```bash
 pnpm install
-pnpm --filter calendar db:init   # create tables
-pnpm --filter calendar seed      # load starter dates (idempotent)
-pnpm dev:calendar                # API on :3161, Vite on :3061
+pnpm calendar:db:init
+pnpm calendar:seed
+pnpm dev:calendar        # web :3061 (Vite), API :3161
 ```
 
-The web app proxies `/api` to the API server, so open **http://localhost:3061**.
+Open **http://localhost:3061/calendar**.
 
-Without any config the API writes to `apps/calendar/data/calendar.db` (gitignored).
+Without config the API writes to `apps/calendar/data/calendar.db` (gitignored).
 
-## Using Turso
+## Build / prerender
 
-Copy `.env.example` to `.env` in this directory and set:
-
-```dotenv
-DATABASE_URL=libsql://your-db-your-org.turso.io
-DATABASE_AUTH_TOKEN=your-auth-token
+```bash
+pnpm --filter calendar build
 ```
 
-Then run `pnpm db:init` and `pnpm seed` again against the remote database.
-No application code changes are needed.
+The Solid app is statically prerendered into `dist/client` by `prerender-crawler`;
+the API runs separately (`pnpm --filter calendar start`).
+
+## Turso
+
+Copy `.env.example` to `.env` and set `DATABASE_URL` / `DATABASE_AUTH_TOKEN`,
+then rerun `db:init` and `seed`. No code changes needed.
 
 ## Features
 
-- **Month view** — 6×7 grid, colour-coded by category, click any day to add a date.
-- **Term view** — the three Kenyan school terms for a year with event counts.
-- **Search view** — look up events by name/description/tag, with a category filter.
-- **Recurrence** — events can be `once`, `yearly` or `monthly`; the API expands
-  recurring events into whatever date range the UI asks for, so holidays keep
-  appearing in future years.
+- **Month view** — colour-coded date pills, click any day to add.
+- **Term view** — three Kenyan school terms with per-term date counts.
+- **Search view** — name/description/tag lookup with a category filter.
+- **Recurrence** — `yearly` / `monthly` events expand server-side into the
+  requested range.
 - **Provenance** — `source`, `source_url` and `tags` on every event.
+- **Embeddings** — `embedding BLOB` + `embedding_model` columns are reserved;
+  see `server/embeddings.ts` for the semantic-search scaffold.
 
 ## API
 
@@ -68,10 +77,3 @@ No application code changes are needed.
 | `DELETE` | `/api/events/:id`                         | delete                |
 | `GET`    | `/api/terms?year=`                        | school terms          |
 | `POST`   | `/api/terms`                              | upsert a school term  |
-
-## Embeddings (not yet enabled)
-
-The schema already has `embedding BLOB` and `embedding_model` on `events`, so
-turning on natural-language search later needs no migration. See
-`server/embeddings.ts` for the `generateEmbedding`, `cosineSimilarity` and
-`rankBySimilarity` stubs and the steps to wire a provider.
