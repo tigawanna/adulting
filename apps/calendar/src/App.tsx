@@ -25,7 +25,7 @@ import { CalendarGrid } from "@/components/CalendarGrid";
 import { EventDialog } from "@/components/EventDialog";
 import { ListView } from "@/components/ListView";
 import { TermView } from "@/components/TermView";
-import { getCalendarData } from "@/lib/data";
+import { getCalendarData, getCategories } from "@/lib/data";
 import { CATEGORY_LABELS, MONTH_NAMES, monthBounds, monthGrid } from "@/lib/date";
 import type { CalendarEvent, EventQuery, SchoolTerm } from "@/lib/types";
 import "@fontsource-variable/outfit";
@@ -37,7 +37,6 @@ const DESCRIPTION =
   "A shared registry of Kenyan public holidays, KRA filing periods, school terms and deadlines — collected in one calendar.";
 
 const now = new Date();
-const CATEGORY_OPTIONS = ["all", "holiday", "tax", "school", "deadline", "other"] as const;
 
 const App: Component = () => {
   const [year, setYear] = createSignal(now.getFullYear());
@@ -52,6 +51,7 @@ const App: Component = () => {
   const [reloadKey, setReloadKey] = createSignal(0);
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
   const [ready, setReady] = createSignal(false);
+  const [categories, setCategories] = createSignal<string[]>([]);
 
   // ── URL as shareable state ──────────────────────────────────────────────
   function readUrl() {
@@ -74,6 +74,7 @@ const App: Component = () => {
     else if (window.matchMedia("(prefers-color-scheme: dark)").matches) initial = "dark";
     setTheme(initial);
     setReady(true);
+    void getCategories().then(setCategories);
     window.addEventListener("popstate", readUrl);
     return () => window.removeEventListener("popstate", readUrl);
   });
@@ -134,16 +135,6 @@ const App: Component = () => {
   const terms = createMemo(() => data()?.terms ?? ([] as SchoolTerm[]));
   const pending = createMemo(() => isPending(data));
   const cells = createMemo(() => monthGrid(year(), month()));
-  const stats = createMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const event of events()) counts[event.category] = (counts[event.category] ?? 0) + 1;
-    return counts;
-  });
-  const pageTitle = createMemo(() => {
-    if (view() === "term") return "School terms";
-    if (view() === "list") return query().trim() ? "Search results" : "All dates";
-    return "Calendar";
-  });
 
   function shiftMonth(delta: number) {
     const d = new Date(year(), month() - 1 + delta, 1);
@@ -180,28 +171,6 @@ const App: Component = () => {
             </span>
           </a>
 
-          <nav class="view-switch" aria-label="Calendar view">
-            <For
-              each={
-                [
-                  { id: "month", label: "Month" },
-                  { id: "term", label: "Terms" },
-                  { id: "list", label: "Search" },
-                ] as const
-              }
-            >
-              {(item) => (
-                <button
-                  type="button"
-                  class={`view-tab ${view() === item.id ? "active" : ""}`}
-                  onClick={() => setView(item.id)}
-                >
-                  {item.label}
-                </button>
-              )}
-            </For>
-          </nav>
-
           <div class="topbar-actions">
             <a class="source-link" href="https://www.kra.go.ke/" target="_blank" rel="noreferrer">
               <IconExternalLink size={15} /> <span>KRA source</span>
@@ -229,13 +198,6 @@ const App: Component = () => {
         </header>
 
         <main class="main">
-          <section class="page-head">
-            <h1>{pageTitle()}</h1>
-            <span class="head-count">
-              {events().length} {events().length === 1 ? "date" : "dates"}
-            </span>
-          </section>
-
           <section class="toolbar">
             <div class="toolbar-group">
               <button
@@ -269,6 +231,18 @@ const App: Component = () => {
               </button>
             </div>
 
+            <label class="select-box view-select">
+              <select
+                value={view()}
+                onChange={(e) => setView(e.currentTarget.value as View)}
+                aria-label="Calendar view"
+              >
+                <option value="month">Month</option>
+                <option value="term">Terms</option>
+                <option value="list">Search</option>
+              </select>
+            </label>
+
             <label class="search-box">
               <IconSearch size={17} />
               <input
@@ -283,30 +257,17 @@ const App: Component = () => {
             </label>
 
             <label class="select-box">
-              <select value={category()} onChange={(e) => setCategory(e.currentTarget.value)}>
-                <For each={CATEGORY_OPTIONS}>
-                  {(c) => (
-                    <option value={c}>{c === "all" ? "All categories" : CATEGORY_LABELS[c]}</option>
-                  )}
+              <select
+                value={category()}
+                onChange={(e) => setCategory(e.currentTarget.value)}
+                aria-label="Category"
+              >
+                <option value="all">All categories</option>
+                <For each={categories()}>
+                  {(c) => <option value={c}>{CATEGORY_LABELS[c] ?? c}</option>}
                 </For>
               </select>
             </label>
-          </section>
-
-          <section class="stats" aria-label="Dates in view by category">
-            <For each={Object.entries(CATEGORY_LABELS)}>
-              {([key, label]) => (
-                <button
-                  type="button"
-                  class={`stat cat-${key} ${category() === key ? "selected" : ""}`}
-                  onClick={() => setCategory(category() === key ? "all" : key)}
-                >
-                  <span class="stat-swatch" />
-                  <span class="stat-text">{label}</span>
-                  <strong>{stats()[key] ?? 0}</strong>
-                </button>
-              )}
-            </For>
           </section>
 
           <Errored

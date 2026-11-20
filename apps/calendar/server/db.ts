@@ -222,6 +222,13 @@ function expandRecurring(event: CalendarEvent, from: string, to: string): Calend
   return out;
 }
 
+export async function listCategories(): Promise<string[]> {
+  const result = await getDb().execute("SELECT DISTINCT category FROM events ORDER BY category");
+  return result.rows
+    .map((row) => text((row as Row).category))
+    .filter((value): value is string => value.length > 0);
+}
+
 export async function getEvent(id: string): Promise<CalendarEvent | null> {
   const result = await getDb().execute({ sql: "SELECT * FROM events WHERE id = ?", args: [id] });
   const row = result.rows[0];

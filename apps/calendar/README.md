@@ -46,8 +46,8 @@ then rerun `db:init` and `seed`. No code changes needed.
 
 ## Features
 
-- Month, term and search views; search by name/description/tag and category.
-- Colour-coded category stats double as filter buttons.
+- Month, term and search views from a compact toolbar selector; search by
+  name/description/tag and filter by a dynamically loaded category list.
 - `yearly` / `monthly` recurrence expanded by the data layer.
 - `source`, `source_url` and `tags` on every event.
 - `embedding BLOB` + `embedding_model` reserved; scaffold in `server/embeddings.ts`.

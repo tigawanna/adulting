@@ -39,6 +39,12 @@ export async function getCalendarData(
   return { events, terms };
 }
 
+export async function getCategories(): Promise<string[]> {
+  "use server";
+  const db = await server();
+  return db.listCategories();
+}
+
 export async function addEvent(input: EventInput): Promise<CalendarEvent> {
   "use server";
   const db = await server();
