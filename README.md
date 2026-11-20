@@ -7,7 +7,7 @@ A small pnpm/turbo monorepo of Kenya-focused utilities. It was seeded from the
 
 | App                                            | Stack                                            | Dev port        | Description                                                                                       |
 | ---------------------------------------------- | ------------------------------------------------ | --------------- | ------------------------------------------------------------------------------------------------- |
-| [`apps/calendar`](apps/calendar)               | React 19 + TanStack Router + Hono + libSQL/Turso | 3061 (API 3161) | One continuous calendar of Kenyan holidays, KRA deadlines, school terms and other dates. **New.** |
+| [`apps/calendar`](apps/calendar)               | Solid 2 + server functions + libSQL/Turso | 3061 | One continuous calendar of Kenyan holidays, KRA deadlines, school terms and other dates. **New.** |
 | [`apps/calc-paye-kenya`](apps/calc-paye-kenya) | Solid 2 + Vite                                   | 3060            | PAYE / statutory deductions calculator (own lockfile).                                            |
 | [`apps/rate-calculator`](apps/rate-calculator) | React + Vite Plus                                | 3050            | Rate / tax calculator.                                                                            |
 
@@ -22,7 +22,7 @@ different peer versions.
 pnpm install
 
 # Three independent dev servers:
-pnpm dev:calendar   # http://localhost:3061  (also starts the API on :3161)
+pnpm dev:calendar   # http://localhost:3061
 pnpm dev:calc       # http://localhost:3060
 pnpm dev:rate       # http://localhost:3050
 
@@ -52,7 +52,7 @@ The calendar uses `@libsql/client`. By default it stores data in a local SQLite
 file at `apps/calendar/data/calendar.db`. To point it at Turso, copy
 `apps/calendar/.env.example` to `apps/calendar/.env` and set `DATABASE_URL` and
 `DATABASE_AUTH_TOKEN`. See [`apps/calendar/README.md`](apps/calendar/README.md)
-for the full details, the API surface, and the reserved embeddings scaffold.
+for the full details, the server-function data layer, and the reserved embeddings scaffold.
 
 > Seeded dates are reference data, not authoritative — verify against KRA, KICD
 > and KNEC before relying on them.

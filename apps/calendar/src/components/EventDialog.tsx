@@ -1,6 +1,6 @@
 import { IconCalendarPlus, IconTrash, IconX } from "@/components/Icons";
 import { createSignal, For, Show, type Component } from "solid-js";
-import { api } from "@/lib/api";
+import { addEvent, editEvent, removeEvent } from "@/lib/data";
 import { CATEGORY_LABELS } from "@/lib/date";
 import type { CalendarEvent, EventCategory, EventInput } from "@/lib/types";
 
@@ -52,8 +52,8 @@ export const EventDialog: Component<Props> = (props) => {
         .filter(Boolean),
     };
     try {
-      if (props.initial) await api.updateEvent(props.initial.id, input);
-      else await api.createEvent(input);
+      if (props.initial) await editEvent(props.initial.id, input);
+      else await addEvent(input);
       props.onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save date");
@@ -65,7 +65,7 @@ export const EventDialog: Component<Props> = (props) => {
     if (!props.initial || !confirm(`Delete "${props.initial.title}"?`)) return;
     setSaving(true);
     try {
-      await api.deleteEvent(props.initial.id);
+      await removeEvent(props.initial.id);
       props.onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not delete date");

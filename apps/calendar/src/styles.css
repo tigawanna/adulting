@@ -287,58 +287,25 @@ a {
 .main {
   width: min(1280px, 100%);
   margin: 0 auto;
-  padding: 38px clamp(16px, 4vw, 40px) 72px;
+  padding: 18px clamp(16px, 4vw, 40px) 56px;
   flex: 1;
 }
 .page-head {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 28px;
-  padding-bottom: 24px;
-  margin-bottom: 22px;
-  border-bottom: 1px solid var(--line);
-}
-.eyebrow {
-  margin: 0 0 10px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 h1 {
   margin: 0;
-  font-size: clamp(30px, 4.2vw, 44px);
+  font-size: 20px;
   font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
-.lede {
-  margin: 10px 0 0;
-  color: var(--ink-soft);
-  font-size: 14px;
-  max-width: 56ch;
-}
-.head-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 3px;
-  padding-left: 22px;
-  border-left: 1px solid var(--line);
-  flex: none;
-}
-.meta-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.head-count {
   color: var(--muted);
-}
-.head-meta strong {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Toolbar ────────────────────────────────────────────────────────────── */
@@ -353,6 +320,19 @@ h1 {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+.month-label {
+  min-width: 118px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.today-btn {
+  min-height: 34px;
+  padding: 0 11px;
+  font-size: 12px;
 }
 .search-box {
   display: flex;
@@ -385,6 +365,20 @@ h1 {
 .search-box input::placeholder {
   color: var(--muted);
 }
+.search-spinner {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 .select-box select {
   height: 40px;
   padding: 0 12px;
@@ -405,24 +399,36 @@ h1 {
 }
 .stat {
   display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 12px;
-  border-radius: var(--radius-pill);
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-radius: var(--radius-control);
   background: var(--surface);
   border: 1px solid var(--line);
   font-size: 11.5px;
+  overflow: hidden;
+  transition:
+    border-color var(--speed) var(--ease),
+    background var(--speed) var(--ease);
 }
-.stat-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+.stat:hover {
+  border-color: var(--line-strong);
+}
+.stat.selected {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+.stat-swatch {
+  width: 22px;
+  flex: none;
   background: var(--pill);
 }
-.stat-label {
+.stat-text {
+  padding: 7px 9px;
   color: var(--ink-soft);
 }
 .stat strong {
+  padding: 7px 10px 7px 0;
   font-variant-numeric: tabular-nums;
   font-size: 12px;
 }
@@ -971,16 +977,6 @@ code {
   .source-link {
     display: none;
   }
-  .page-head {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .head-meta {
-    align-items: flex-start;
-    padding-left: 0;
-    border-left: 0;
-  }
   .calendar-grid {
     grid-auto-rows: minmax(80px, 1fr);
   }
@@ -992,6 +988,34 @@ code {
   }
   .list-source {
     display: none;
+  }
+}
+
+/* ── First-load skeleton ────────────────────────────────────────────────── */
+.skeleton .day-number,
+.skeleton .sk-day {
+  display: block;
+  width: 20px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--surface-sunken);
+  animation: pulse 1.2s var(--ease) infinite alternate;
+}
+.skeleton .sk-pill {
+  display: block;
+  width: 70%;
+  height: 12px;
+  margin-top: 8px;
+  border-radius: 4px;
+  background: var(--surface-sunken);
+  animation: pulse 1.2s var(--ease) 0.15s infinite alternate;
+}
+@keyframes pulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
   }
 }
 

@@ -18,6 +18,13 @@ export interface CalendarEvent {
   updatedAt: string;
 }
 
+export interface EventQuery {
+  from?: string;
+  to?: string;
+  search?: string;
+  category?: string;
+}
+
 export interface SchoolTerm {
   id: string;
   name: string;

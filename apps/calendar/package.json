@@ -4,23 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n api,web -c green,cyan \"pnpm dev:api\" \"pnpm dev:web\"",
-    "dev:api": "tsx watch server/index.ts",
-    "dev:web": "vite --port 3061",
+    "dev": "vite --port 3061",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --port 3061",
-    "start": "tsx server/index.ts",
+    "start": "node dist/server/server.js",
     "check-types": "tsc --noEmit",
     "db:init": "tsx scripts/db-init.ts",
     "seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "@fontsource-variable/outfit": "^5.3.0",
-    "@hono/node-server": "^2.1.11",
     "@libsql/client": "^0.18.0",
     "@solidjs/meta": "^2.0.0",
     "@solidjs/web": "^2.0.3",
-    "hono": "^4.13.19",
     "solid-js": "^2.0.3"
   },
   "devDependencies": {
@@ -29,7 +25,6 @@
     "@solidjs/prerender": "^0.3.0",
     "@solidjs/vite-plugin": "^3.0.1",
     "@types/node": "^25.2.0",
-    "concurrently": "^10.0.7",
     "prerender-crawler": "^0.3.0",
     "tsx": "^4.23.15",
     "typescript": "7.0.2",
