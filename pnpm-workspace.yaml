@@ -1,8 +1,7 @@
 packages:
   - apps/*
-  - packages/*
-  # Solid 2 declares different package exports than the Solid 1 peers used by
-  # apps/web; keep this app on its own lockfile so both can coexist.
+  # calc-paye-kenya runs Solid 2 with its own lockfile so it can coexist with
+  # the React apps in this workspace.
   - "!apps/calc-paye-kenya"
 
 catalog:
@@ -58,7 +57,6 @@ overrides:
   ws: ^8.22.2
   picomatch: ^4.0.4
   postcss: ^8.5.10
-  vite@*: "catalog:"
 
 # better-auth's optional peers stop at vitest 4 and better-sqlite3 12.
 # Widen them so the catalog vitest and the app's sqlite 13 satisfy the same copy.

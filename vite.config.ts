@@ -2,7 +2,9 @@ import { defineConfig } from "vite-plus";
 
 export default defineConfig({
   fmt: {
-    ignorePatterns: ["**/routeTree.gen.ts"],
+    // These apps were carried over verbatim from the source monorepo; keep
+    // their original formatting rather than reformatting them on every run.
+    ignorePatterns: ["**/routeTree.gen.ts", "apps/calc-paye-kenya/**", "apps/rate-calculator/**"],
   },
   staged: {
     "*": (files: readonly string[]) => {

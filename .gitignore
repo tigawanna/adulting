@@ -57,3 +57,6 @@ apps/web/tsconfig.tsbuildinfo
 
 # Local wide-event logs
 .evlog
+
+# Calendar app (apps/calendar): local libSQL database
+apps/calendar/data/
