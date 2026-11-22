@@ -1,20 +1,18 @@
-# Kenya Tools
+# Adulting
 
-A small pnpm/turbo monorepo of Kenya-focused utilities. It was seeded from the
-`agentic-json-resume` monorepo and pruned down to the parts we care about.
+A pnpm/turbo monorepo of Kenya-focused tools for the unglamorous parts of
+adult life: pay, rates, and the calendar of dates you actually have to track.
 
 ## Apps
 
-| App                                            | Stack                                     | Dev port | Description                                                                                       |
-| ---------------------------------------------- | ----------------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
-| [`apps/calendar`](apps/calendar)               | Solid 2 + server functions + libSQL/Turso | 3061     | One continuous calendar of Kenyan holidays, KRA deadlines, school terms and other dates. **New.** |
-| [`apps/calc-paye-kenya`](apps/calc-paye-kenya) | Solid 2 + Vite                            | 3060     | PAYE / statutory deductions calculator (own lockfile).                                            |
-| [`apps/rate-calculator`](apps/rate-calculator) | React + Vite Plus                         | 3050     | Rate / tax calculator.                                                                            |
+| App                                            | Stack                                     | Dev port | Description                                                                        |
+| ---------------------------------------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------- |
+| [`apps/calendar`](apps/calendar)               | Solid 2 + server functions + libSQL/Turso | 3061     | One continuous calendar of Kenyan holidays, KRA deadlines, school terms and dates. |
+| [`apps/calc-paye-kenya`](apps/calc-paye-kenya) | Solid 2 + Vite                            | 3060     | PAYE / statutory deductions calculator (own lockfile).                             |
+| [`apps/rate-calculator`](apps/rate-calculator) | React + Vite Plus                         | 3050     | Rate / tax calculator.                                                             |
 
-Only these three apps remain. All other apps, shared packages, marketing and
-deployment code from the source monorepo were removed. `calc-paye-kenya` keeps
-its own `pnpm-lock.yaml` because it runs Solid 2 while the React apps use
-different peer versions.
+`calc-paye-kenya` keeps its own `pnpm-lock.yaml` because it runs Solid 2 while
+the React apps use different peer versions.
 
 ## Quick start
 
