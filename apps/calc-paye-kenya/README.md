@@ -12,6 +12,23 @@ pnpm --filter calc-paye-kenya build        # prerenders / into dist/client
 pnpm --filter calc-paye-kenya preview
 ```
 
+## Deploy (Netlify)
+
+This app is a **static** prerender. Publish **`dist/client`**, not `dist`.
+`dist/` only contains `client/` and `server/`; there is no `dist/index.html`,
+which is why a default Netlify `dist` publish 404s.
+
+If the site is linked from this package directory:
+
+```bash
+pnpm --filter calc-paye-kenya build
+netlify deploy --filter calc-paye-kenya --prod --dir=dist/client
+```
+
+`netlify.toml` in this folder sets `publish = "dist/client"`. In the Netlify UI,
+package directory should be `apps/calc-paye-kenya` and publish directory
+`dist/client`. You do not need a Nitro or Netlify adapter.
+
 ## What is different from the React app
 
 - **Solid 2 start mode.** `vite.config.ts` enables `solid({ start: true, ssr: true, serverFunctions: true })` and the `prerender-crawler` plugin, so `vite build` renders the page to static HTML in `dist/client`. `src/Document.tsx` replaces `index.html`.

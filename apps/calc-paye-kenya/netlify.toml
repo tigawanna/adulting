@@ -1,0 +1,13 @@
+# Static prerender — no Nitro / no Netlify function adapter.
+# `vite build` writes HTML + assets to dist/client (SSR bundle stays in dist/server).
+[build]
+  command = "pnpm --filter calc-paye-kenya build"
+  publish = "dist/client"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
