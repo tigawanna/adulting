@@ -10,7 +10,7 @@ export function DisclaimerBanner() {
     <Show when={!calc.disclaimerDismissed()}>
       <aside
         aria-label="Disclaimer"
-        class="mb-6 flex items-start gap-3 rounded-md border border-destructive/25 bg-destructive/[0.06] px-3.5 py-3">
+        class="mt-5 mb-0 flex items-start gap-3 rounded-md border border-destructive/25 bg-destructive/6 px-3.5 py-3">
         <Icon name="info" size={16} class="mt-0.5 shrink-0 text-destructive" />
         <div class="min-w-0 flex-1">
           <p class="text-[11px] leading-relaxed text-muted-foreground">

@@ -21,8 +21,8 @@ export function EmploymentSwitch() {
   return (
     <section
       aria-labelledby="employment-label"
-      class="mt-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-y border-border py-3">
-      <div class="flex items-center gap-3">
+      class="mt-6 flex flex-col items-start gap-3 border-y border-border py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6">
+      <div class="flex flex-wrap items-center gap-3">
         <span id="employment-label" class="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
           I am
         </span>

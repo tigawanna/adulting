@@ -39,6 +39,25 @@ month / view / search keeps the previous calendar on screen while the new data
 loads. A small spinner appears inside the search field; only the very first
 load shows a skeleton. No view flashes to a loader once data exists.
 
+## Deploy (Netlify)
+
+Publish **`apps/calendar/dist/client`** from the repo root (same cwd quirk as
+the calculator). Reads and writes go through Solid server functions at
+`/_server`, so the site also deploys `netlify/functions/server.mjs`.
+
+Set these in the Netlify UI (file SQLite will not survive serverless):
+
+- `DATABASE_URL` — Turso `libsql://…`
+- `DATABASE_AUTH_TOKEN`
+
+```bash
+pnpm --filter calendar build
+netlify deploy --filter calendar --prod --dir=apps/calendar/dist/client
+```
+
+In the Netlify UI, package directory is `apps/calendar`. `netlify.toml` in this
+folder already sets the build command and publish path.
+
 ## Turso
 
 Copy `.env.example` to `.env` and set `DATABASE_URL` / `DATABASE_AUTH_TOKEN`,

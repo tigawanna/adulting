@@ -19,14 +19,14 @@ export function Header() {
   return (
     <header class="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
       <div>
-        <div class="flex items-baseline gap-3">
+        <div class="flex flex-col items-start gap-1 sm:flex-row sm:items-baseline sm:gap-3">
           <h1 class="text-lg font-medium tracking-tight">
             calc paye kenya<span class="text-primary">.</span>
           </h1>
           <span class="text-[10px] tracking-[0.16em] text-muted-foreground uppercase">rate · currency · tax</span>
         </div>
         <p class="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">
-          What your hourly rate actually means — per week, per month, in your currency and after Kenyan statutory
+          What your hourly rate actually means per week, per month, in your currency, and after Kenyan statutory
           deductions.
         </p>
       </div>

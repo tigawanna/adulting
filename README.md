@@ -39,8 +39,11 @@ pnpm --filter calendar build
 pnpm --filter calc-paye-kenya build
 ```
 
-Calendar serves `dist/server/server.js` (or static output in `dist/client`).
-The calculator prerenders to `apps/calc-paye-kenya/dist/client`.
+Calendar: `apps/calendar/dist/client` plus a Netlify function for `/_server`
+(see `apps/calendar/netlify.toml`). Set `DATABASE_URL` and
+`DATABASE_AUTH_TOKEN` on the site.
+
+Calculator: `apps/calc-paye-kenya/dist/client` (`apps/calc-paye-kenya/netlify.toml`).
 
 ## Other commands
 

@@ -37,7 +37,7 @@ export function Deductions() {
     <section class="mt-14 border-t border-border pt-8">
       <div class="grid gap-8 lg:grid-cols-[minmax(0,290px)_minmax(0,1fr)] lg:gap-16">
         <div>
-          <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <div class="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-2">
             <h2 class="text-sm font-medium">Statutory deductions</h2>
             <span class="text-[11px] text-muted-foreground">{KRA_CONFIG.taxYear} · resident</span>
           </div>

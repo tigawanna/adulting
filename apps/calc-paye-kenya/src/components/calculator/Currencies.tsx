@@ -53,14 +53,14 @@ export function Currencies() {
               {(currency) => {
                 const pinned = () => calc.pinned().includes(currency.code);
                 return (
-                  <div class="flex items-center justify-between gap-3 border-b border-border/60 py-2">
+                  <div class="flex flex-col gap-2 border-b border-border/60 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                     <div class="min-w-0">
                       <p class="text-xs">
                         <span aria-hidden="true">{currency.flag}</span> <span class="numeric">{currency.code}</span>
                       </p>
                       <p class="truncate text-[10px] text-muted-foreground">{currency.name}</p>
                     </div>
-                    <div class="flex shrink-0 items-center gap-1">
+                    <div class="flex shrink-0 items-center justify-end gap-1">
                       <Show when={pinned()}>
                         <Button
                           variant="ghost"

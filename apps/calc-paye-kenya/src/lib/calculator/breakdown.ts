@@ -43,3 +43,22 @@ export function hoursPerWeekFromMonthly(monthlyHours: number, weeksPerMonth: num
   const weeks = weeksPerMonth > 0 ? weeksPerMonth : 4;
   return Number((monthlyHours / weeks).toFixed(2));
 }
+
+export const REFERENCE_PERIODS = ["hour", "week", "month", "year"] as const;
+export type ReferencePeriod = (typeof REFERENCE_PERIODS)[number];
+
+/** Scale a monthly KES figure across hour / week / month / year using the same hours model as the rate breakdown. */
+export function scaleMonthlyToPeriods(
+  monthly: number,
+  hoursPerMonth: number,
+  weeksPerMonth: number,
+): Record<ReferencePeriod, number> {
+  const weeks = weeksPerMonth > 0 ? weeksPerMonth : 4;
+  const hours = hoursPerMonth > 0 ? hoursPerMonth : 0;
+  return {
+    hour: hours > 0 ? monthly / hours : 0,
+    week: monthly / weeks,
+    month: monthly,
+    year: monthly * 12,
+  };
+}

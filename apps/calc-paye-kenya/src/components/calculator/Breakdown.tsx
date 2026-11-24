@@ -40,7 +40,7 @@ export function BreakdownView() {
 
   return (
     <section class="space-y-5">
-      <div class="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-3">
+      <div class="flex flex-col gap-1 border-b border-border pb-3 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-2">
         <h2 class="text-sm font-medium">Your rate, broken down</h2>
         <span class="numeric text-[11px] text-muted-foreground">
           {breakdown().hoursPerMonth} hrs / month ·{" "}
@@ -64,14 +64,14 @@ export function BreakdownView() {
 
       <div class="space-y-2">
         <p class="text-[11px] text-muted-foreground">What if you worked more hours?</p>
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           <For each={breakdown().scenarios} keyed={(scenario) => scenario.hours}>
             {(scenario) => (
               <Button
                 size="sm"
                 variant={Math.abs(breakdown().hoursPerMonth - scenario().hours) < 0.01 ? "selected" : "outline"}
                 onClick={() => calc.setHoursPerMonth(scenario().hours)}
-                class={`numeric h-auto flex-col items-start gap-0 px-3 py-2 ${
+                class={`numeric h-auto w-full justify-between gap-3 px-3 py-2 sm:w-auto sm:min-w-34 ${
                   Math.abs(breakdown().hoursPerMonth - scenario().hours) < 0.01 ? "" : "border border-border"
                 }`}>
                 <span

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deriveBreakdown, hoursPerWeekFromMonthly, periodHours } from "./breakdown";
+import { deriveBreakdown, hoursPerWeekFromMonthly, periodHours, scaleMonthlyToPeriods } from "./breakdown";
 import { FALLBACK_RATES, convert } from "./currencies";
 import { KRA_CONFIG, SHIPPED_KRA_CONFIG } from "./kra";
 import { resolveKraConfig } from "./kra-overrides";
@@ -31,6 +31,23 @@ describe("deriveBreakdown", () => {
   it("derives hours per week from monthly hours", () => {
     expect(hoursPerWeekFromMonthly(175, 4)).toBe(43.75);
     expect(hoursPerWeekFromMonthly(180, 4.5)).toBe(40);
+  });
+});
+
+describe("scaleMonthlyToPeriods", () => {
+  it("splits a monthly amount across hour, week, month and year", () => {
+    const scaled = scaleMonthlyToPeriods(1600, 160, 4);
+    expect(scaled.hour).toBe(10);
+    expect(scaled.week).toBe(400);
+    expect(scaled.month).toBe(1600);
+    expect(scaled.year).toBe(19_200);
+  });
+
+  it("returns zeros when hours are missing", () => {
+    const scaled = scaleMonthlyToPeriods(1000, 0, 0);
+    expect(scaled.hour).toBe(0);
+    expect(scaled.week).toBe(250);
+    expect(scaled.year).toBe(12_000);
   });
 });
 

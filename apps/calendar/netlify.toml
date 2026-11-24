@@ -1,0 +1,23 @@
+# Netlify cwd is the repo root (packagePath is metadata only).
+# Static shell is dist/client; Solid server functions live on /_server.
+[build]
+  command = "pnpm --filter calendar build"
+  publish = "apps/calendar/dist/client"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "apps/calendar/netlify/functions"
+  node_bundler = "esbuild"
+  included_files = ["apps/calendar/dist/server/**"]
+
+[[redirects]]
+  from = "/_server"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[[redirects]]
+  from = "/_server/*"
+  to = "/.netlify/functions/server"
+  status = 200

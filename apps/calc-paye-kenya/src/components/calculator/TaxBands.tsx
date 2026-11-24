@@ -13,7 +13,23 @@ export function TaxBands(props: { bands: readonly KraBand[]; taxableAnnual: numb
         How the PAYE was calculated
       </DisclosureButton>
       <DisclosurePanel class="pt-3">
-        <table class="w-full text-left text-[11px] tabular-nums">
+        <div class="space-y-2 sm:hidden">
+          <For each={props.bands} keyed={(band) => band.label}>
+            {(band) => (
+              <div class="rounded-md border border-border px-3 py-2">
+                <div class="flex items-baseline justify-between gap-3">
+                  <p class="text-[11px]">{band().label}</p>
+                  <p class="numeric text-[11px] text-muted-foreground">{(band().rate * 100).toFixed(1)}%</p>
+                </div>
+                <div class="mt-1 flex items-baseline justify-between gap-3">
+                  <p class="text-[10px] text-muted-foreground">Taxable {money(band().taxable)}</p>
+                  <p class="numeric text-[11px]">Tax {money(band().tax)}</p>
+                </div>
+              </div>
+            )}
+          </For>
+        </div>
+        <table class="hidden w-full text-left text-[11px] tabular-nums sm:table">
           <thead class="text-muted-foreground">
             <tr>
               <th class="pb-2 font-normal">Band</th>
@@ -23,7 +39,7 @@ export function TaxBands(props: { bands: readonly KraBand[]; taxableAnnual: numb
             </tr>
           </thead>
           <tbody>
-            <For each={props.bands} keyed={(band) => band.label}>
+            <For each={props.bands} keyed={(band) => `table-${band.label}`}>
               {(band) => (
                 <tr class="border-t border-border/60">
                   <td class="py-1.5">{band().label}</td>

@@ -21,9 +21,9 @@ function CalculatorPage() {
 
   return (
     <div class="min-h-screen">
-      <div class="mx-auto max-w-5xl px-5 py-10 sm:px-8 lg:py-14">
-        <DisclaimerBanner />
+      <div class="mx-auto max-w-5xl px-4 py-8 sm:px-8 sm:py-10 lg:py-14">
         <Header />
+        <DisclaimerBanner />
         <EmploymentSwitch />
 
         <main class="mt-8 grid gap-12 lg:grid-cols-[minmax(0,290px)_minmax(0,1fr)] lg:gap-16">
