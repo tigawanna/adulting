@@ -5,11 +5,11 @@ A prerendered Solid 2 + start-mode port of the React calculator. Same features â
 ## Run it
 
 ```bash
-pnpm --dir apps/calc-paye-kenya dev        # http://localhost:3060
-pnpm --dir apps/calc-paye-kenya test
-pnpm --dir apps/calc-paye-kenya check-types
-pnpm --dir apps/calc-paye-kenya build      # prerenders / into dist/client
-pnpm --dir apps/calc-paye-kenya preview
+pnpm --filter calc-paye-kenya dev          # http://localhost:3060
+pnpm --filter calc-paye-kenya test
+pnpm --filter calc-paye-kenya check-types
+pnpm --filter calc-paye-kenya build        # prerenders / into dist/client
+pnpm --filter calc-paye-kenya preview
 ```
 
 ## What is different from the React app
@@ -23,11 +23,11 @@ pnpm --dir apps/calc-paye-kenya preview
 
 ## Configuration and assets
 
-KRA values still come from `src/lib/calculator/kra-rates.json`, with `VITE_KRA_*` environment overrides documented in `.env.example`. See the React app's README for the full list of fields.
+KRA values still come from `src/lib/calculator/kra-rates.json`, with `VITE_KRA_*` environment overrides documented in `.env.example`.
 
 ```bash
-pnpm --dir apps/calc-paye-kenya gen:favicons  # from public/icon.png
-pnpm --dir apps/calc-paye-kenya gen:og        # from public/logo.svg + scripts/OgImage.tsx
+pnpm --filter calc-paye-kenya gen:favicons  # from public/icon.png
+pnpm --filter calc-paye-kenya gen:og        # from public/logo.svg + scripts/OgImage.tsx
 ```
 
-The pure calculation functions are shared with the React version and covered by 24 Vitest cases.
+The pure calculation functions are covered by Vitest.

@@ -1,8 +1,5 @@
 packages:
   - apps/*
-  # calc-paye-kenya runs Solid 2 with its own lockfile so it can coexist with
-  # the React apps in this workspace.
-  - "!apps/calc-paye-kenya"
 
 catalog:
   "@typescript/native-preview": 7.0.0-dev.20260707.2
@@ -49,7 +46,6 @@ overrides:
   proxy-addr: ^2.0.8
   qs: ^6.17.1
   seroval: ^1.7.10
-  # apps/web and its devtools still target Solid 1; the Solid 2 port uses its own lockfile.
   sharp: ^0.35.5
   shell-quote: ^1.12.0
   source-map-js: ^1.2.2

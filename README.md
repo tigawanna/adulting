@@ -8,21 +8,18 @@ adult life: pay, rates, and the calendar of dates you actually have to track.
 | App                                            | Stack                                     | Dev port | Description                                                                        |
 | ---------------------------------------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------- |
 | [`apps/calendar`](apps/calendar)               | Solid 2 + server functions + libSQL/Turso | 3061     | One continuous calendar of Kenyan holidays, KRA deadlines, school terms and dates. |
-| [`apps/calc-paye-kenya`](apps/calc-paye-kenya) | Solid 2 + Vite                            | 3060     | PAYE / statutory deductions calculator (own lockfile).                             |
-| [`apps/rate-calculator`](apps/rate-calculator) | React + Vite Plus                         | 3050     | Rate / tax calculator.                                                             |
+| [`apps/calc-paye-kenya`](apps/calc-paye-kenya) | Solid 2 + Vite                            | 3060     | PAYE / statutory deductions calculator.                                            |
 
-`calc-paye-kenya` keeps its own `pnpm-lock.yaml` because it runs Solid 2 while
-the React apps use different peer versions.
+Both apps are workspace packages, so `pnpm install`, `pnpm build`, and
+`pnpm --filter <name> …` work from the repo root.
 
 ## Quick start
 
 ```bash
 pnpm install
 
-# Three independent dev servers:
 pnpm dev:calendar   # http://localhost:3061
 pnpm dev:calc       # http://localhost:3060
-pnpm dev:rate       # http://localhost:3050
 
 # Or run all at once:
 pnpm dev
@@ -34,6 +31,16 @@ First-time calendar setup:
 pnpm calendar:db:init
 pnpm calendar:seed
 ```
+
+## Deploy / CI from the root
+
+```bash
+pnpm --filter calendar build
+pnpm --filter calc-paye-kenya build
+```
+
+Calendar serves `dist/server/server.js` (or static output in `dist/client`).
+The calculator prerenders to `apps/calc-paye-kenya/dist/client`.
 
 ## Other commands
 
