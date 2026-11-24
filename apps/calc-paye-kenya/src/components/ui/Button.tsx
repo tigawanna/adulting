@@ -1,4 +1,4 @@
-import { Button as TcButton } from "terracotta/button";
+import { Button as UiButton } from "@ui-sdk/solid/button";
 import type { JSX } from "@solidjs/web";
 
 type Variant = "default" | "selected" | "ghost" | "outline" | "link" | "danger";
@@ -14,10 +14,9 @@ interface ButtonProps {
   children?: JSX.Element;
 }
 
-/** Terracotta button with the shadcn-like skin from styles/terracotta.css. */
 export function Button(props: ButtonProps) {
   return (
-    <TcButton
+    <UiButton
       type="button"
       class={[
         "tc-btn",
@@ -29,8 +28,9 @@ export function Button(props: ButtonProps) {
       disabled={props.disabled}
       aria-pressed={props.pressed ? "true" : undefined}
       aria-label={props.label}
-      onClick={props.onClick}>
+      onClick={props.onClick}
+    >
       {props.children}
-    </TcButton>
+    </UiButton>
   );
 }

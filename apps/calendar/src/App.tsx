@@ -29,6 +29,7 @@ import { getCalendarData, getCategories } from "@/lib/data";
 import { CATEGORY_LABELS, MONTH_NAMES, monthBounds, monthGrid } from "@/lib/date";
 import type { CalendarEvent, EventQuery, SchoolTerm } from "@/lib/types";
 import "@fontsource-variable/outfit";
+import "@ui-sdk/core/web.css";
 import "./styles.css";
 
 type View = "month" | "term" | "list";

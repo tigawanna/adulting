@@ -12,6 +12,7 @@ export default defineConfig({
     solid({ start: true, ssr: true, serverFunctions: true }),
     prerender({ mode: "static", integrations: [serverFunctions()] }),
   ],
+  optimizeDeps: { exclude: ["@ui-sdk/core"] },
   build: { assetsInlineLimit: 0 },
   server: {
     port: 3061,

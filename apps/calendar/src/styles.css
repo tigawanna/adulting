@@ -1,6 +1,8 @@
 /* Kenya Tools Calendar — instrument-like, quiet, dual-theme.
    One accent (green); category hues are data semantics, not UI accents. */
 
+@layer ui-sdk;
+
 :root {
   --font: "Outfit Variable", "Outfit", system-ui, -apple-system, sans-serif;
 

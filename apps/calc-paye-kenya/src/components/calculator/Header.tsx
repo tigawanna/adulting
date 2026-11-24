@@ -1,5 +1,5 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from "@ui-sdk/solid/tooltip";
 import { Show } from "solid-js";
-import { Tooltip, TooltipPanel, TooltipTrigger } from "terracotta/tooltip";
 import { Icon } from "@/components/icons";
 import { useCalculator } from "@/state/calculator";
 
@@ -15,6 +15,7 @@ export function Header() {
     calc.updatedAt() > 0
       ? new Date(calc.updatedAt()).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
       : "";
+  const themeLabel = () => `Switch to ${calc.theme() === "dark" ? "light" : "dark"} mode`;
 
   return (
     <header class="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
@@ -23,48 +24,55 @@ export function Header() {
           <h1 class="text-lg font-medium tracking-tight">
             calc paye kenya<span class="text-primary">.</span>
           </h1>
-          <span class="text-[10px] tracking-[0.16em] text-muted-foreground uppercase">rate · currency · tax</span>
+          <span class="text-[10px] tracking-[0.16em] text-muted-foreground uppercase">
+            rate · currency · tax
+          </span>
         </div>
         <p class="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">
-          What your hourly rate actually means per week, per month, in your currency, and after Kenyan statutory
-          deductions.
+          What your hourly rate actually means per week, per month, in your currency, and after
+          Kenyan statutory deductions.
         </p>
       </div>
 
       <div class="flex items-center gap-1.5 pt-0.5">
         <Show when={calc.disclaimerDismissed()}>
-          <Tooltip defaultOpen={false}>
+          <Tooltip type="label">
             <TooltipTrigger
               class="tc-btn tc-btn-ghost tc-btn-icon tc-btn-danger"
               aria-label="Show disclaimer"
-              onClick={calc.showDisclaimer}>
+              onClick={calc.showDisclaimer}
+            >
               <Icon name="info" />
             </TooltipTrigger>
-            <TooltipPanel>Show disclaimer</TooltipPanel>
+            <TooltipContent class="ui-tooltip">Show disclaimer</TooltipContent>
           </Tooltip>
         </Show>
         <span class="numeric text-[11px] text-muted-foreground">
           {STATUS_VIEW[calc.rateStatus()]}
           {time() ? ` · ${time()}` : ""}
         </span>
-        <Tooltip defaultOpen={false}>
+        <Tooltip type="label">
           <TooltipTrigger
             class="tc-btn tc-btn-ghost tc-btn-icon"
             aria-label="Refresh exchange rates"
-            disabled={calc.rateStatus() === "loading"}
-            onClick={() => void calc.refreshRates()}>
+            aria-disabled={calc.rateStatus() === "loading" ? "true" : undefined}
+            onClick={() => {
+              if (calc.rateStatus() !== "loading") void calc.refreshRates();
+            }}
+          >
             <Icon name="refresh" class={calc.rateStatus() === "loading" ? "animate-spin" : ""} />
           </TooltipTrigger>
-          <TooltipPanel>Refresh exchange rates</TooltipPanel>
+          <TooltipContent class="ui-tooltip">Refresh exchange rates</TooltipContent>
         </Tooltip>
-        <Tooltip defaultOpen={false}>
+        <Tooltip type="label">
           <TooltipTrigger
             class="tc-btn tc-btn-ghost tc-btn-icon"
-            aria-label={`Switch to ${calc.theme() === "dark" ? "light" : "dark"} mode`}
-            onClick={calc.toggleTheme}>
+            aria-label={themeLabel()}
+            onClick={calc.toggleTheme}
+          >
             <Icon name={calc.theme() === "dark" ? "sun" : "moon"} />
           </TooltipTrigger>
-          <TooltipPanel>{calc.theme() === "dark" ? "Switch to light mode" : "Switch to dark mode"}</TooltipPanel>
+          <TooltipContent class="ui-tooltip">{themeLabel()}</TooltipContent>
         </Tooltip>
       </div>
     </header>

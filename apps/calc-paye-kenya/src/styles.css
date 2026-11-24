@@ -1,4 +1,6 @@
+@layer ui-sdk;
 @import "tailwindcss";
+@import "@ui-sdk/core/web.css" layer(components);
 @import "./styles/terracotta.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -134,4 +136,3 @@ body {
     clip-path: circle(155% at 100% 0%);
   }
 }
-

@@ -1,9 +1,18 @@
-import { Switch as TcSwitch } from "terracotta/switch";
+import { Switch as UiSwitch, SwitchThumb } from "@ui-sdk/solid/switch";
 
-export function Switch(props: { checked: boolean; onChange: (checked: boolean) => void; label: string }) {
+export function Switch(props: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+}) {
   return (
-    <TcSwitch class="tc-switch" checked={props.checked} onChange={props.onChange} aria-label={props.label}>
-      <span class="switch-knob" aria-hidden="true" />
-    </TcSwitch>
+    <UiSwitch
+      checked={props.checked}
+      onCheckedChange={(checked) => props.onChange(checked)}
+      aria-label={props.label}
+      class="ui-switch"
+    >
+      <SwitchThumb class="ui-switch-thumb" />
+    </UiSwitch>
   );
 }

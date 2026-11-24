@@ -1,7 +1,7 @@
 {
   "name": "calc-paye-kenya",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --port 3060",
@@ -15,6 +15,8 @@
   "dependencies": {
     "@solidjs/meta": "^2.0.0",
     "@solidjs/web": "^2.0.3",
+    "@ui-sdk/core": "0.1.0-beta.17",
+    "@ui-sdk/solid": "0.1.0-beta.17",
     "solid-js": "^2.0.3",
     "terracotta": "^2.0.0"
   },
@@ -22,10 +24,13 @@
     "@babel/core": "^7.28.0",
     "@solidjs/babel-plugin": "^2.0.0",
     "@solidjs/prerender": "^0.3.0",
+    "@solidjs/testing-library": "1.0.0-rc.2",
     "@solidjs/vite-plugin": "^3.0.1",
     "@tailwindcss/vite": "^4.3.0",
+    "@testing-library/user-event": "^14.6.13",
     "@types/node": "^25.2.0",
     "@types/react": "^19.2.14",
+    "jsdom": "^31.0.1",
     "png-to-ico": "^3.0.2",
     "prerender-crawler": "^0.3.0",
     "react": "^19.2.5",

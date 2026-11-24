@@ -14,7 +14,13 @@ export default defineConfig({
     tailwindcss(),
     prerender({ mode: "static", integrations: [serverFunctions()] }),
   ],
+  optimizeDeps: { exclude: ["@ui-sdk/core"] },
   build: { assetsInlineLimit: 0 },
   server: { port: 3060 },
-  test: { environment: "node", globals: false },
+  test: {
+    environment: "jsdom",
+    globals: false,
+    setupFiles: ["./src/test/setup.ts"],
+    css: false,
+  },
 });

@@ -23,7 +23,8 @@ export function Controls() {
   const calc = useCalculator();
   const controls = calc.controls;
 
-  const hoursPerWeek = () => Math.round((controls.hoursPerMonth / controls.weeksPerMonth) * 100) / 100;
+  const hoursPerWeek = () =>
+    Math.round((controls.hoursPerMonth / controls.weeksPerMonth) * 100) / 100;
   const amountUsd = () => convert(controls.amount, controls.inputCurrency, "USD", calc.rates());
   const localPins = () => calc.pinned().filter((code) => code !== controls.inputCurrency);
 
@@ -38,7 +39,13 @@ export function Controls() {
 
       <div class="grid grid-cols-2 gap-3 @md:grid-cols-[minmax(0,1fr)_110px_120px]">
         <div class="col-span-2 @md:col-span-1">
-          <NumberField id="amount" label="Amount" step={0.5} value={() => controls.amount} onChange={calc.setAmount} />
+          <NumberField
+            id="amount"
+            label="Amount"
+            step={0.5}
+            value={() => controls.amount}
+            onChange={calc.setAmount}
+          />
         </div>
         <SelectField
           id="input-currency"
@@ -47,18 +54,31 @@ export function Controls() {
           onChange={calc.setInputCurrency}
           options={CURRENCY_OPTIONS}
         />
-        <SelectField id="period" label="Period" value={controls.period} onChange={calc.setPeriod} options={PERIODS} />
+        <SelectField
+          id="period"
+          label="Period"
+          value={controls.period}
+          onChange={calc.setPeriod}
+          options={PERIODS}
+        />
       </div>
 
       <div class="rounded-md border border-border bg-muted/25 px-3 py-2.5">
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-          <span class="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">In your currency</span>
-          <Show when={localPins().length > 0} fallback={<span class="text-xs text-muted-foreground">None pinned</span>}>
+          <span class="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
+            In your currency
+          </span>
+          <Show
+            when={localPins().length > 0}
+            fallback={<span class="text-xs text-muted-foreground">None pinned</span>}
+          >
             <For each={localPins()}>
               {(code) => (
                 <span class="numeric text-xs">
                   {calc.formatMoney(calc.local(amountUsd(), code), code)}
-                  <span class="ml-1 text-[10px] text-muted-foreground">{PERIOD_SUFFIX[controls.period]}</span>
+                  <span class="ml-1 text-[10px] text-muted-foreground">
+                    {PERIOD_SUFFIX[controls.period]}
+                  </span>
                 </span>
               )}
             </For>
@@ -68,7 +88,8 @@ export function Controls() {
             size="icon"
             label="Pin another currency"
             onClick={() => calc.setDrawerOpen(true)}
-            class="ml-auto">
+            class="ml-auto"
+          >
             <Icon name="plus" />
           </Button>
         </div>
@@ -81,7 +102,9 @@ export function Controls() {
           suffix="hrs"
           step={0.25}
           value={() => hoursPerWeek()}
-          onChange={(value) => calc.setHoursPerMonth(Math.round(value * controls.weeksPerMonth * 100) / 100)}
+          onChange={(value) =>
+            calc.setHoursPerMonth(Math.round(value * controls.weeksPerMonth * 100) / 100)
+          }
         />
         <NumberField
           id="weeks-month"
@@ -108,8 +131,10 @@ export function Controls() {
               <Button
                 size="sm"
                 variant={Math.abs(controls.hoursPerMonth - hours) < 0.01 ? "selected" : "outline"}
+                pressed={Math.abs(controls.hoursPerMonth - hours) < 0.01}
                 onClick={() => calc.setHoursPerMonth(hours)}
-                class="numeric text-xs">
+                class="numeric text-xs"
+              >
                 {hours} hrs
               </Button>
             )}

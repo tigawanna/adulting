@@ -1,6 +1,11 @@
+import { Field, FieldLabel } from "@ui-sdk/solid/field";
+import {
+  SegmentedControl,
+  SegmentedControlIndicator,
+  SegmentedControlItem,
+} from "@ui-sdk/solid/segmented-control";
 import { For } from "solid-js";
 import { Icon } from "@/components/icons";
-import { Button } from "@/components/ui/Button";
 import { useCalculator } from "@/state/calculator";
 import type { EmploymentMode } from "@/lib/calculator";
 
@@ -19,29 +24,34 @@ export function EmploymentSwitch() {
   const employment = () => calc.controls.employment;
 
   return (
-    <section
-      aria-labelledby="employment-label"
-      class="mt-6 flex flex-col items-start gap-3 border-y border-border py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6">
-      <div class="flex flex-wrap items-center gap-3">
-        <span id="employment-label" class="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
+    <section class="mt-6 flex flex-col items-start gap-3 border-y border-border py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6">
+      <Field class="flex flex-wrap items-center gap-3">
+        <FieldLabel class="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
           I am
-        </span>
-        <div role="group" aria-labelledby="employment-label" class="tc-segment">
+        </FieldLabel>
+        <SegmentedControl
+          value={employment()}
+          onValueChange={(value) => {
+            if (value !== null) calc.setEmployment(value as EmploymentMode);
+          }}
+        >
+          <SegmentedControlIndicator class="bg-primary" />
           <For each={MODES}>
             {(mode) => (
-              <Button
-                size="sm"
-                variant={employment() === mode.value ? "selected" : "ghost"}
-                pressed={employment() === mode.value}
-                onClick={() => calc.setEmployment(mode.value)}>
+              <SegmentedControlItem
+                value={mode.value}
+                class="gap-1.5 text-xs data-checked:text-primary-foreground"
+              >
                 <Icon name={mode.icon} size={12} />
                 {mode.label}
-              </Button>
+              </SegmentedControlItem>
             )}
           </For>
-        </div>
-      </div>
-      <p class="max-w-md text-[11px] leading-relaxed text-muted-foreground">{MODE_COPY[employment()]}</p>
+        </SegmentedControl>
+      </Field>
+      <p class="max-w-md text-[11px] leading-relaxed text-muted-foreground">
+        {MODE_COPY[employment()]}
+      </p>
     </section>
   );
 }
