@@ -1,8 +1,9 @@
 # Static prerender — no Nitro / no Netlify function adapter.
-# `vite build` writes HTML + assets to dist/client (SSR bundle stays in dist/server).
+# Netlify runs this config with cwd = repo root (packagePath is only metadata),
+# so publish must be the path from the repo root, not from this folder.
 [build]
   command = "pnpm --filter calc-paye-kenya build"
-  publish = "dist/client"
+  publish = "apps/calc-paye-kenya/dist/client"
 
 [build.environment]
   NODE_VERSION = "22"

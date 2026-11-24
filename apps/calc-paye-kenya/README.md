@@ -14,20 +14,16 @@ pnpm --filter calc-paye-kenya preview
 
 ## Deploy (Netlify)
 
-This app is a **static** prerender. Publish **`dist/client`**, not `dist`.
-`dist/` only contains `client/` and `server/`; there is no `dist/index.html`,
-which is why a default Netlify `dist` publish 404s.
-
-If the site is linked from this package directory:
+This app is a **static** prerender. The site files land in
+`apps/calc-paye-kenya/dist/client`. Netlify’s build cwd is the **repo root**,
+so `publish` in `netlify.toml` is that full path (not `dist/client`).
 
 ```bash
 pnpm --filter calc-paye-kenya build
-netlify deploy --filter calc-paye-kenya --prod --dir=dist/client
+netlify deploy --filter calc-paye-kenya --prod --dir=apps/calc-paye-kenya/dist/client
 ```
 
-`netlify.toml` in this folder sets `publish = "dist/client"`. In the Netlify UI,
-package directory should be `apps/calc-paye-kenya` and publish directory
-`dist/client`. You do not need a Nitro or Netlify adapter.
+No Nitro or Netlify adapter is required.
 
 ## What is different from the React app
 
