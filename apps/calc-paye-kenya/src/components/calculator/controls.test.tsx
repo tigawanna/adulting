@@ -114,8 +114,8 @@ test("the currency drawer filters, pins and returns focus on close", async () =>
   expect(document.activeElement).toBe(search);
 
   await user.keyboard("EUR");
-  const rows = screen.getAllByRole("button", { name: /EUR/ });
-  expect(rows.some((row) => row.textContent?.includes("Pin"))).toBe(true);
+  const pin = screen.getByRole("button", { name: "Pin" });
+  expect(pin.parentElement?.parentElement?.textContent).toContain("EUR");
 
   await user.click(screen.getByRole("button", { name: "Close currencies" }));
   expect(screen.queryByRole("dialog", { name: "Currencies" })).toBeNull();

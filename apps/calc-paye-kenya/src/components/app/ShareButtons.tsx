@@ -20,7 +20,7 @@ export function ShareButtons() {
         <Icon name="link" size={12} /> {copied() ? "Copied" : "Copy link"}
       </Button>
       <Button variant="ghost" size="sm" label="Clear filters" onClick={calc.reset}>
-        <Icon name="x" size={12} /> Clear
+        <Icon name="x" size={12} /> Clear filters
       </Button>
     </div>
   );

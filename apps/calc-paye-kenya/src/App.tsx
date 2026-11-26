@@ -2,6 +2,7 @@ import { Meta, Title } from "@solidjs/meta";
 import { Show } from "solid-js";
 import { Credit } from "@/components/app/Credit";
 import { ShareButtons } from "@/components/app/ShareButtons";
+import { Icon } from "@/components/icons";
 import { BreakdownView } from "@/components/calculator/Breakdown";
 import { Controls } from "@/components/calculator/Controls";
 import { Currencies } from "@/components/calculator/Currencies";
@@ -38,17 +39,20 @@ function CalculatorPage() {
         <Deductions />
         <Disclaimer />
 
-        <footer class="mt-8 flex flex-col gap-4 border-t border-border pt-4 text-[10px] text-muted-foreground lg:flex-row lg:items-start lg:justify-between">
-          <div class="flex flex-col gap-3">
-            <div class="flex flex-wrap gap-x-4 gap-y-1">
-              <p>Exchange rates: open.er-api.com · refreshed on demand.</p>
-              <Show when={calc.updatedAt() > 0}>
-                <p>Updated {new Date(calc.updatedAt()).toLocaleTimeString()}</p>
-              </Show>
+        <footer class="mt-8 border-t border-border pt-5 text-[10px] text-muted-foreground">
+          <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div class="flex flex-col gap-3">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <Icon name="refresh" size={12} class="shrink-0 text-muted-foreground" />
+                <p>Exchange rates: open.er-api.com · refreshed on demand.</p>
+                <Show when={calc.updatedAt() > 0}>
+                  <p>Updated {new Date(calc.updatedAt()).toLocaleTimeString()}</p>
+                </Show>
+              </div>
+              <ShareButtons />
             </div>
-            <ShareButtons />
+            <Credit />
           </div>
-          <Credit />
         </footer>
 
         <Currencies />

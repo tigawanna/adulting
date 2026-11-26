@@ -152,6 +152,7 @@ function ReferenceTable() {
                     variant="ghost"
                     size="icon"
                     label={`Remove ${code()} rate`}
+                    iconOnly
                     onClick={() => calc.togglePin(code())}
                     class="tc-btn-tiny text-muted-foreground"
                   >

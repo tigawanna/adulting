@@ -85,6 +85,7 @@ export function Controls() {
                     variant="ghost"
                     size="icon"
                     label={`Remove ${code} from your currency`}
+                    iconOnly
                     onClick={() => calc.togglePin(code)}
                     class="tc-btn-tiny text-muted-foreground"
                   >
@@ -98,6 +99,7 @@ export function Controls() {
             variant="ghost"
             size="icon"
             label="Pin another currency"
+            iconOnly
             onClick={() => calc.setDrawerOpen(true)}
             class="ml-auto"
           >

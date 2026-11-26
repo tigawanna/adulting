@@ -10,6 +10,7 @@ interface ButtonProps {
   disabled?: boolean;
   pressed?: boolean;
   label?: string;
+  iconOnly?: boolean;
   onClick?: () => void;
   children?: JSX.Element;
 }
@@ -27,7 +28,7 @@ export function Button(props: ButtonProps) {
       ]}
       disabled={props.disabled}
       aria-pressed={props.pressed ? "true" : undefined}
-      aria-label={props.label}
+      aria-label={props.iconOnly ? props.label : undefined}
       onClick={props.onClick}
     >
       {props.children}
