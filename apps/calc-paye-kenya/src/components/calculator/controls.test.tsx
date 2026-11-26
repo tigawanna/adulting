@@ -4,7 +4,6 @@ import { createAgent } from "@ui-sdk/solid/agent";
 import { afterEach, expect, test, vi } from "vitest";
 import { CalculatorProvider, useCalculator } from "@/state/calculator";
 import { Credit } from "@/components/app/Credit";
-import { ShareButtons } from "@/components/app/ShareButtons";
 import { Controls } from "./Controls";
 import { Currencies } from "./Currencies";
 import { DeductionRow } from "./DeductionRow";
@@ -54,7 +53,7 @@ function Fixture() {
       <Currencies />
       <Tax />
       <DeductionProbe />
-      <ShareButtons />
+      <Header />
       <StateProbe />
     </CalculatorProvider>
   );
@@ -169,6 +168,8 @@ test("an agent can find and change every calculator control", async () => {
     "I am",
     "Include NSSF",
     "Pin another currency",
+    "Copy share link",
+    "Clear filters",
   ]) {
     expect(labels, `${label} is missing from the snapshot`).toContain(label);
   }
@@ -259,20 +260,6 @@ test("clearing filters resets the scenario and the URL", async () => {
     expect(state()).toMatchObject({ amount: 10, currency: "USD", period: "hour", pinned: ["KES"] }),
   );
   await waitFor(() => expect(window.location.search).toBe(""));
-});
-
-test("the bottom share button copies the current link", async () => {
-  const user = userEvent.setup();
-  const writeText = vi.fn().mockResolvedValue(undefined);
-  Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
-  render(() => <Fixture />);
-
-  await waitFor(() => expect(window.location.search).toContain("rates="));
-  await user.click(screen.getByRole("button", { name: "Copy link" }));
-
-  expect(writeText).toHaveBeenCalledWith(
-    expect.stringContaining(`${window.location.origin}${window.location.pathname}?`),
-  );
 });
 
 test("the footer credits the author and links the repository", () => {

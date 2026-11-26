@@ -46,7 +46,7 @@ Any change is written to the URL with `replaceState`, so the address bar is alwa
 | `pinned`                       | Comma-separated pinned currency codes                  |
 | `rates`                        | Compact rate snapshot for the currencies in view       |
 
-Opening a shared link restores those values after hydration and shows **Shared rates** instead of fetching live ones; **Refresh exchange rates** switches back to live data and rewrites the URL. The header's **Copy share link** button copies it, and the footer has a **Copy link** button plus **Clear**, which resets every control to its default and empties the query string. A brief splash covers the initial URL-to-state hop when share parameters are present.
+Opening a shared link restores those values after hydration and shows **Shared rates** instead of fetching live ones; **Refresh exchange rates** switches back to live data and rewrites the URL. The header's **Copy share link** button copies it; the icon-only **Clear filters** button beside it resets every control to its default and empties the query string. A brief splash covers the initial URL-to-state hop when share parameters are present.
 
 Defaults are omitted from the URL, so a fresh visit stays clean.
 

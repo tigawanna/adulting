@@ -57,6 +57,16 @@ export function Header() {
             {copied() ? "Copied" : "Copy share link"}
           </TooltipContent>
         </Tooltip>
+        <Tooltip type="label">
+          <TooltipTrigger
+            class="tc-btn tc-btn-ghost tc-btn-icon"
+            aria-label="Clear filters"
+            onClick={calc.reset}
+          >
+            <Icon name="x" size={14} />
+          </TooltipTrigger>
+          <TooltipContent class="ui-tooltip">Clear filters</TooltipContent>
+        </Tooltip>
         <Show when={calc.disclaimerDismissed()}>
           <Tooltip type="label">
             <TooltipTrigger

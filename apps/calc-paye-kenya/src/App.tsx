@@ -1,7 +1,6 @@
 import { Meta, Title } from "@solidjs/meta";
 import { Show } from "solid-js";
 import { Credit } from "@/components/app/Credit";
-import { ShareButtons } from "@/components/app/ShareButtons";
 import { Icon } from "@/components/icons";
 import { BreakdownView } from "@/components/calculator/Breakdown";
 import { Controls } from "@/components/calculator/Controls";
@@ -22,7 +21,7 @@ function CalculatorPage() {
   const calc = useCalculator();
 
   return (
-    <div class="min-h-screen">
+    <div class="min-h-screen pb-[5vh]">
       <div class="mx-auto max-w-5xl px-4 py-8 sm:px-8 sm:py-10 lg:py-14">
         <Header />
         <DisclaimerBanner />
@@ -49,7 +48,6 @@ function CalculatorPage() {
                   <p>Updated {new Date(calc.updatedAt()).toLocaleTimeString()}</p>
                 </Show>
               </div>
-              <ShareButtons />
             </div>
             <Credit />
           </div>
