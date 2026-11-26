@@ -1,7 +1,7 @@
 import { Button as UiButton } from "@ui-sdk/solid/button";
 import type { JSX } from "@solidjs/web";
 
-type Variant = "default" | "selected" | "ghost" | "outline" | "link" | "danger";
+type Variant = "default" | "selected" | "primary-60" | "ghost" | "outline" | "link" | "danger";
 
 interface ButtonProps {
   variant?: Variant;

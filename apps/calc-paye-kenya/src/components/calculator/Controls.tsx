@@ -74,11 +74,22 @@ export function Controls() {
           >
             <For each={localPins()}>
               {(code) => (
-                <span class="numeric text-xs">
-                  {calc.formatMoney(calc.local(amountUsd(), code), code)}
-                  <span class="ml-1 text-[10px] text-muted-foreground">
-                    {PERIOD_SUFFIX[controls.period]}
+                <span class="inline-flex items-center gap-0.5">
+                  <span class="numeric text-xs">
+                    {calc.formatMoney(calc.local(amountUsd(), code), code)}
+                    <span class="ml-1 text-[10px] text-muted-foreground">
+                      {PERIOD_SUFFIX[controls.period]}
+                    </span>
                   </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    label={`Remove ${code} from your currency`}
+                    onClick={() => calc.togglePin(code)}
+                    class="tc-btn-tiny text-muted-foreground"
+                  >
+                    <Icon name="x" size={10} />
+                  </Button>
                 </span>
               )}
             </For>

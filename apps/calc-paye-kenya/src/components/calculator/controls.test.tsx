@@ -1,13 +1,19 @@
-import { render, screen } from "@solidjs/testing-library";
+import { render, screen, waitFor } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
 import { createAgent } from "@ui-sdk/solid/agent";
-import { expect, test } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { CalculatorProvider, useCalculator } from "@/state/calculator";
+import { Credit } from "@/components/app/Credit";
+import { ShareButtons } from "@/components/app/ShareButtons";
 import { Controls } from "./Controls";
 import { Currencies } from "./Currencies";
 import { DeductionRow } from "./DeductionRow";
 import { EmploymentSwitch } from "./EmploymentSwitch";
+import { Header } from "./Header";
+import { Tax } from "./Tax";
 import { TaxBands } from "./TaxBands";
+
+afterEach(() => window.history.replaceState(null, "", "/"));
 
 function StateProbe() {
   const calc = useCalculator();
@@ -21,6 +27,7 @@ function StateProbe() {
         hours: calc.controls.hoursPerMonth,
         weeks: calc.controls.weeksPerMonth,
         nssf: calc.controls.deductions.nssf,
+        pinned: calc.pinned(),
       })}
     </output>
   );
@@ -45,7 +52,9 @@ function Fixture() {
       <EmploymentSwitch />
       <Controls />
       <Currencies />
+      <Tax />
       <DeductionProbe />
+      <ShareButtons />
       <StateProbe />
     </CalculatorProvider>
   );
@@ -172,4 +181,121 @@ test("an agent can find and change every calculator control", async () => {
   });
   expect(result.ok, result.error?.message).toBe(true);
   expect(state()).toMatchObject({ amount: 250, currency: "EUR" });
+});
+
+test("a shared URL restores the whole scenario", async () => {
+  window.history.replaceState(
+    null,
+    "",
+    "/?amount=3500&currency=KRW&period=month&hours=180&weeks=4&employment=contractor&deductions=shif%2Cahl&pinned=KES%2CEUR&rates=USD%3A1%2CKES%3A130%2CKRW%3A1300%2CEUR%3A0.9",
+  );
+  render(() => <Fixture />);
+
+  await waitFor(() =>
+    expect(state()).toMatchObject({
+      amount: 3500,
+      currency: "KRW",
+      period: "month",
+      hours: 180,
+      employment: "contractor",
+      nssf: false,
+      pinned: ["KES", "EUR"],
+    }),
+  );
+});
+
+test("clears the boot splash once shared state is applied", async () => {
+  window.history.replaceState(null, "", "/?amount=42");
+  document.documentElement.dataset.booting = "share";
+  render(() => <Fixture />);
+
+  await waitFor(() => expect(state().amount).toBe(42));
+  await waitFor(() => expect(document.documentElement.dataset.booting).toBeUndefined());
+});
+
+test("control changes are written back to the URL", async () => {
+  const user = userEvent.setup();
+  window.history.replaceState(null, "", "/");
+  render(() => <Fixture />);
+
+  await waitFor(() => expect(window.location.search).toContain("rates="));
+  await user.click(screen.getByRole("button", { name: "170 hrs" }));
+
+  await waitFor(() => expect(new URLSearchParams(window.location.search).get("hours")).toBe("170"));
+});
+
+test("the copy button shares the current URL", async () => {
+  const user = userEvent.setup();
+  const writeText = vi.fn().mockResolvedValue(undefined);
+  Object.defineProperty(navigator, "clipboard", {
+    value: { writeText },
+    configurable: true,
+  });
+  render(() => (
+    <CalculatorProvider>
+      <Header />
+    </CalculatorProvider>
+  ));
+
+  await waitFor(() => expect(window.location.search).toContain("rates="));
+  await user.click(screen.getByRole("button", { name: "Copy share link" }));
+
+  expect(writeText).toHaveBeenCalledWith(
+    expect.stringContaining(new URLSearchParams(window.location.search).toString()),
+  );
+});
+
+test("clearing filters resets the scenario and the URL", async () => {
+  const user = userEvent.setup();
+  window.history.replaceState(null, "", "/?amount=3500&currency=KRW&period=month&pinned=KES%2CEUR");
+  render(() => <Fixture />);
+
+  await waitFor(() =>
+    expect(state()).toMatchObject({ amount: 3500, currency: "KRW", period: "month" }),
+  );
+  await user.click(screen.getByRole("button", { name: "Clear filters" }));
+
+  await waitFor(() =>
+    expect(state()).toMatchObject({ amount: 10, currency: "USD", period: "hour", pinned: ["KES"] }),
+  );
+  await waitFor(() => expect(window.location.search).toBe(""));
+});
+
+test("the bottom share button copies the current link", async () => {
+  const user = userEvent.setup();
+  const writeText = vi.fn().mockResolvedValue(undefined);
+  Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+  render(() => <Fixture />);
+
+  await waitFor(() => expect(window.location.search).toContain("rates="));
+  await user.click(screen.getByRole("button", { name: "Copy link" }));
+
+  expect(writeText).toHaveBeenCalledWith(
+    expect.stringContaining(`${window.location.origin}${window.location.pathname}?`),
+  );
+});
+
+test("the footer credits the author and links the repository", () => {
+  render(() => <Credit />);
+
+  expect(screen.getByRole("link", { name: /tigawanna/ }).getAttribute("href")).toContain(
+    "npmjs.com",
+  );
+  expect(screen.getByRole("link", { name: "Repository" }).getAttribute("href")).toBe(
+    "https://github.com/tigawanna/adulting/tree/master/apps/calc-paye-kenya",
+  );
+});
+
+test("pinned rates can be removed and re-added from the lower sections", async () => {
+  const user = userEvent.setup();
+  window.history.replaceState(null, "", "/?pinned=KES%2CEUR&rates=KES%3A130%2CUSD%3A1%2CEUR%3A0.9");
+  render(() => <Fixture />);
+
+  await waitFor(() => expect(state().pinned).toEqual(["KES", "EUR"]));
+  await user.click(screen.getByRole("button", { name: "Remove EUR rate" }));
+  await waitFor(() => expect(state().pinned).not.toContain("EUR"));
+  expect(screen.queryByRole("button", { name: "Remove EUR rate" })).toBeNull();
+
+  await user.click(screen.getByRole("button", { name: "Add rate" }));
+  expect(await screen.findByRole("dialog", { name: "Currencies" })).toBeTruthy();
 });

@@ -55,6 +55,12 @@
   background: color-mix(in srgb, var(--primary) 88%, transparent);
 }
 
+.tc-btn-primary-60,
+.tc-btn-primary-60:hover {
+  background: color-mix(in srgb, var(--primary) 60%, transparent);
+  color: var(--foreground);
+}
+
 .tc-btn-ghost:hover,
 .tc-btn-outline:hover {
   background: var(--accent);
@@ -88,6 +94,14 @@
   width: 2rem;
   height: 2rem;
   padding: 0;
+}
+
+.tc-btn-tiny {
+  width: 1.25rem;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  padding: 0;
+  font-size: 0.875rem;
 }
 
 .tc-segment {

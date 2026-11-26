@@ -1,7 +1,15 @@
 import { For, Show } from "solid-js";
+import { Icon } from "@/components/icons";
+import { Button } from "@/components/ui/Button";
 import { NumberField } from "./Field";
 import { TaxBands } from "./TaxBands";
-import { convert, KRA_CONFIG, REFERENCE_PERIODS, scaleMonthlyToPeriods, type ReferencePeriod } from "@/lib/calculator";
+import {
+  convert,
+  KRA_CONFIG,
+  REFERENCE_PERIODS,
+  scaleMonthlyToPeriods,
+  type ReferencePeriod,
+} from "@/lib/calculator";
 import { useCalculator } from "@/state/calculator";
 
 const MODE_LABEL = { salaried: "Employer deductions", contractor: "Self-remitted" } as const;
@@ -60,7 +68,9 @@ export function Tax() {
           <p class="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
             {salaried() ? "Withheld / month" : "Set aside / month"}
           </p>
-          <p class="numeric mt-1 text-2xl font-medium sm:text-3xl">{money(statutory().totalDeductions)}</p>
+          <p class="numeric mt-1 text-2xl font-medium sm:text-3xl">
+            {money(statutory().totalDeductions)}
+          </p>
         </div>
         <p class="numeric text-xs leading-relaxed text-muted-foreground sm:col-span-2">
           {(() => {
@@ -76,17 +86,19 @@ export function Tax() {
       <ReferenceTable />
 
       <p class="numeric text-[10px] text-muted-foreground">
-        Total deductions are {(statutory().effectiveRate * 100).toFixed(1)}% of gross · taxable pay {money(statutory().taxable)} / month
+        Total deductions are {(statutory().effectiveRate * 100).toFixed(1)}% of gross · taxable pay{" "}
+        {money(statutory().taxable)} / month
       </p>
 
       <Show
         when={!salaried()}
         fallback={
           <p class="border-t border-border pt-3 text-[10px] leading-relaxed text-muted-foreground">
-            Your employer withholds PAYE monthly using KRA&apos;s pay-band tables. The band-by-band breakdown is shown
-            for contractors.
+            Your employer withholds PAYE monthly using KRA&apos;s pay-band tables. The band-by-band
+            breakdown is shown for contractors.
           </p>
-        }>
+        }
+      >
         <TaxBands bands={statutory().payeResult.bands} taxableAnnual={statutory().taxable * 12} />
       </Show>
     </section>
@@ -114,7 +126,8 @@ function ReferenceTable() {
   const grossKes = () => scaleMonthlyToPeriods(statutory().gross, hours(), weeks());
   const netKes = () => scaleMonthlyToPeriods(statutory().net, hours(), weeks());
 
-  const amount = (kes: number, code: string) => (code === "KES" ? kes : convert(kes, "KES", code, calc.rates()));
+  const amount = (kes: number, code: string) =>
+    code === "KES" ? kes : convert(kes, "KES", code, calc.rates());
   const figure = (value: number) =>
     new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 0,
@@ -123,26 +136,49 @@ function ReferenceTable() {
 
   return (
     <div class="space-y-2">
-      <p class="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">Gross &amp; take-home by period</p>
+      <p class="text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
+        Gross &amp; take-home by period
+      </p>
       <div class="space-y-3">
         <For each={currencies()} keyed={(code) => code}>
           {(code) => (
             <div class="overflow-hidden rounded-md border border-border">
-              <p class="border-b border-border px-3 py-2 text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
-                {code()}
-              </p>
+              <div class="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
+                <p class="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
+                  {code()}
+                </p>
+                <Show when={calc.pinned().includes(code())}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    label={`Remove ${code()} rate`}
+                    onClick={() => calc.togglePin(code())}
+                    class="tc-btn-tiny text-muted-foreground"
+                  >
+                    <Icon name="x" size={10} />
+                  </Button>
+                </Show>
+              </div>
               <div class="grid grid-cols-2 gap-px bg-border md:grid-cols-4">
                 <For each={[...REFERENCE_PERIODS]} keyed={(period) => `${code()}-${period}`}>
                   {(period) => (
                     <div class="bg-background px-3 py-2.5">
-                      <p class="text-[9px] tracking-wide text-muted-foreground uppercase">{PERIOD_LABEL[period()]}</p>
+                      <p class="text-[9px] tracking-wide text-muted-foreground uppercase">
+                        {PERIOD_LABEL[period()]}
+                      </p>
                       <div class="mt-1.5 flex items-baseline justify-between gap-2">
-                        <span class="text-[9px] tracking-wide text-muted-foreground uppercase">Gross</span>
-                        <span class="numeric text-xs">{figure(amount(grossKes()[period()], code()))}</span>
+                        <span class="text-[9px] tracking-wide text-muted-foreground uppercase">
+                          Gross
+                        </span>
+                        <span class="numeric text-xs">
+                          {figure(amount(grossKes()[period()], code()))}
+                        </span>
                       </div>
                       <div class="mt-0.5 flex items-baseline justify-between gap-2">
                         <span class="text-[9px] tracking-wide text-primary uppercase">Net</span>
-                        <span class="numeric text-xs text-primary">{figure(amount(netKes()[period()], code()))}</span>
+                        <span class="numeric text-xs text-primary">
+                          {figure(amount(netKes()[period()], code()))}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -152,6 +188,15 @@ function ReferenceTable() {
           )}
         </For>
       </div>
+      <Button
+        variant="primary-60"
+        size="sm"
+        label="Add rate"
+        onClick={() => calc.setDrawerOpen(true)}
+        class="w-full"
+      >
+        <Icon name="plus" size={12} /> Add rate
+      </Button>
       <p class="text-[10px] text-muted-foreground">
         Net is monthly take-home scaled across periods. Deductions / yr{" "}
         {calc.formatMoney(statutory().totalDeductions * 12, "KES")}.

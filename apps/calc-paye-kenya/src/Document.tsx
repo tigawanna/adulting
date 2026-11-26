@@ -12,6 +12,16 @@ const BOOT_THEME = `(() => {
   }
 })();`;
 
+const BOOT_SHARE = `(() => {
+  const keys = ["amount", "currency", "period", "hours", "weeks", "employment", "deductions", "pinned", "rates"];
+  const params = new URLSearchParams(location.search);
+  if (keys.some((key) => params.has(key))) {
+    const root = document.documentElement;
+    root.dataset.booting = "share";
+    setTimeout(() => delete root.dataset.booting, 5000);
+  }
+})();`;
+
 export default function Document(props: { children: JSX.Element }) {
   return (
     <html lang="en">
@@ -26,6 +36,7 @@ export default function Document(props: { children: JSX.Element }) {
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <script innerHTML={BOOT_THEME} />
+        <script innerHTML={BOOT_SHARE} />
         <HydrationScript />
       </head>
       <body>{props.children}</body>

@@ -1,12 +1,15 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@ui-sdk/solid/tooltip";
-import { Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { Icon } from "@/components/icons";
 import { useCalculator } from "@/state/calculator";
+import { copyToClipboard } from "@/state/share";
 
 const STATUS_VIEW = {
   loading: "Updating rates",
   error: "Bundled rates",
   idle: "Live rates",
+  shared: "Shared rates",
+  bundled: "Bundled rates",
 } as const;
 
 export function Header() {
@@ -16,6 +19,13 @@ export function Header() {
       ? new Date(calc.updatedAt()).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
       : "";
   const themeLabel = () => `Switch to ${calc.theme() === "dark" ? "light" : "dark"} mode`;
+  const [copied, setCopied] = createSignal(false);
+
+  async function copyLink(): Promise<void> {
+    await copyToClipboard(calc.shareUrl());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
 
   return (
     <header class="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
@@ -35,6 +45,18 @@ export function Header() {
       </div>
 
       <div class="flex items-center gap-1.5 pt-0.5">
+        <Tooltip type="label">
+          <TooltipTrigger
+            class="tc-btn tc-btn-ghost tc-btn-icon"
+            aria-label="Copy share link"
+            onClick={() => void copyLink()}
+          >
+            <Icon name="link" size={14} />
+          </TooltipTrigger>
+          <TooltipContent class="ui-tooltip">
+            {copied() ? "Copied" : "Copy share link"}
+          </TooltipContent>
+        </Tooltip>
         <Show when={calc.disclaimerDismissed()}>
           <Tooltip type="label">
             <TooltipTrigger

@@ -1,6 +1,7 @@
 import { Meta, Title } from "@solidjs/meta";
 import { Show } from "solid-js";
 import { Credit } from "@/components/app/Credit";
+import { ShareButtons } from "@/components/app/ShareButtons";
 import { BreakdownView } from "@/components/calculator/Breakdown";
 import { Controls } from "@/components/calculator/Controls";
 import { Currencies } from "@/components/calculator/Currencies";
@@ -37,12 +38,15 @@ function CalculatorPage() {
         <Deductions />
         <Disclaimer />
 
-        <footer class="mt-8 flex flex-wrap justify-between gap-2 border-t border-border pt-4 text-[10px] text-muted-foreground">
-          <div class="flex flex-wrap gap-x-4 gap-y-1">
-            <p>Exchange rates: open.er-api.com · refreshed on demand.</p>
-            <Show when={calc.updatedAt() > 0}>
-              <p>Updated {new Date(calc.updatedAt()).toLocaleTimeString()}</p>
-            </Show>
+        <footer class="mt-8 flex flex-col gap-4 border-t border-border pt-4 text-[10px] text-muted-foreground lg:flex-row lg:items-start lg:justify-between">
+          <div class="flex flex-col gap-3">
+            <div class="flex flex-wrap gap-x-4 gap-y-1">
+              <p>Exchange rates: open.er-api.com · refreshed on demand.</p>
+              <Show when={calc.updatedAt() > 0}>
+                <p>Updated {new Date(calc.updatedAt()).toLocaleTimeString()}</p>
+              </Show>
+            </div>
+            <ShareButtons />
           </div>
           <Credit />
         </footer>
@@ -56,6 +60,10 @@ function CalculatorPage() {
 export default function App() {
   return (
     <>
+      <div class="boot-splash" aria-hidden="true">
+        <img src="/logo.svg" alt="" />
+        <p>Loading your calculation</p>
+      </div>
       <Title>Calc Paye Kenya — Rate &amp; KRA calculator</Title>
       <Meta name="description" content={DESCRIPTION} />
       <Meta property="og:title" content="Calc Paye Kenya — Rate & KRA calculator" />
